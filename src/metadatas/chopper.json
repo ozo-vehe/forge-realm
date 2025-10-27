@@ -1,0 +1,47 @@
+{
+  "name": "Berserker's Chopper",
+  "description": "A brutal cleaving weapon designed for maximum damage. This massive chopper is favored by berserker warriors who fight with reckless abandon. Its wide blade and heavy construction make it perfect for devastating sweeping attacks that can strike multiple enemies.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/Qmd3gbPXKtk1zAp1PcGBuT3sbPfosRZPwaAxpAhYiZFwAJ",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Weapon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Attack Power",
+      "value": 92
+    },
+    {
+      "trait_type": "Durability",
+      "value": "High"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Heavy Iron"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Very Heavy"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Cleave"
+    },
+    {
+      "trait_type": "Area of Effect",
+      "value": "Wide"
+    },
+    {
+      "trait_type": "Style",
+      "value": "Berserker"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

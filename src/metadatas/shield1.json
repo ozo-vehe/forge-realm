@@ -1,0 +1,35 @@
+{
+  "name": "Iron Shield",
+  "description": "A sturdy iron shield with classic medieval design. This reliable defensive equipment has protected many warriors in battle. Its simple yet effective construction makes it a trusted companion for any adventurer.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmcvuB4qB5LEWerVrE49vzYUbkuQxDQgAMFXarkpvyR9yF",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Shield"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Defense",
+      "value": 60
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Medium"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Iron"
+    },
+    {
+      "trait_type": "Style",
+      "value": "Classic"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

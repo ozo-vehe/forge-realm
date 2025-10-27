@@ -1,0 +1,51 @@
+{
+  "name": "Guardian's Shield",
+  "description": "A masterfully crafted shield that has protected countless warriors throughout history. This defensive masterpiece combines superior craftsmanship with magical reinforcement, making it nearly indestructible. It radiates a warm, protective aura that bolsters the courage of allies.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmQbvm23KcXVAAXZMeEc7NoyCEQZK19Y1x1HhYwnFiu7ts",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Shield"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Defense",
+      "value": 92
+    },
+    {
+      "trait_type": "Magic Resistance",
+      "value": 80
+    },
+    {
+      "trait_type": "Material",
+      "value": "Blessed Steel"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Medium"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Protection Aura"
+    },
+    {
+      "trait_type": "Glow",
+      "value": "Golden"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Courage Boost"
+    },
+    {
+      "trait_type": "Durability",
+      "value": "Very High"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

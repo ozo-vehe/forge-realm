@@ -1,0 +1,31 @@
+{
+  "name": "Viking Warrior (Bald)",
+  "description": "A commanding Viking avatar characterized by a bald head, giving him a fierce and battle-hardened appearance. This avatar wears a rugged, horned helmet and displays a formidable beard, symbolizing the strength and determination of Norse warriors.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmY1Ma5TqzK22PUtjDEKRLiDQ2nyaRrGFAfZukdFjUMsvf",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Foundation"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Earth"
+    },
+    {
+      "trait_type": "Power Level",
+      "value": 1
+    },
+    {
+      "trait_type": "Material",
+      "value": "Ancient Stone"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

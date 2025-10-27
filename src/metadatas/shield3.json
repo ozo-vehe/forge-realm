@@ -1,0 +1,43 @@
+{
+  "name": "Dragon Scale Shield",
+  "description": "A legendary shield crafted from the scales of an ancient dragon. This rare and powerful shield provides exceptional protection and carries the essence of draconic power. Only the most skilled warriors can wield such a magnificent piece.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmQce5Ekv7vr3RhbeYG9i4pKDvko8Rxdq1SoE1FY51Y6cn",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Shield"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Defense",
+      "value": 95
+    },
+    {
+      "trait_type": "Fire Resistance",
+      "value": 100
+    },
+    {
+      "trait_type": "Material",
+      "value": "Dragon Scale"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Dragon's Blessing"
+    },
+    {
+      "trait_type": "Glow",
+      "value": "Red"
+    },
+    {
+      "trait_type": "Power Level",
+      "value": 10
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

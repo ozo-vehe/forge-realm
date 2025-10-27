@@ -1,0 +1,39 @@
+{
+  "name": "Enchanted Shield",
+  "description": "A mystical shield imbued with magical properties. This enchanted shield not only provides physical protection but also wards off dark magic. Its intricate runes glow with inner power.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmYEdMeZ6ev4KNnkXpnjnmJ9WBM9Qk4Eew23UWZcZGQtmY",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Shield"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Defense",
+      "value": 90
+    },
+    {
+      "trait_type": "Magic Resistance",
+      "value": 75
+    },
+    {
+      "trait_type": "Material",
+      "value": "Enchanted Metal"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Magic Ward"
+    },
+    {
+      "trait_type": "Glow",
+      "value": "Blue"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

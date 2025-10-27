@@ -1,0 +1,1 @@
+export { DiscoverMoreNftsSubsection } from "./DiscoverMoreNftsSubsection";

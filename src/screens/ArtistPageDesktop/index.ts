@@ -1,0 +1,1 @@
+export { ArtistPageDesktop } from "./ArtistPageDesktop"

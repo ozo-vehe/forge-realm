@@ -1,0 +1,47 @@
+{
+  "name": "Shadow Blade",
+  "description": "A sleek and deadly blade forged from dark metal that seems to absorb light. This mysterious weapon is incredibly sharp and moves with supernatural speed. Legends say it was crafted by shadow assassins and carries whispers of ancient magic.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmPkYhTkEaEzN1fthpepwnKYxqRYsFNvJhLL3KmVAy918Z",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Weapon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Attack Power",
+      "value": 82
+    },
+    {
+      "trait_type": "Durability",
+      "value": "Very High"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Shadow Steel"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Shadow Strike"
+    },
+    {
+      "trait_type": "Speed",
+      "value": "Very Fast"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Darkness"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

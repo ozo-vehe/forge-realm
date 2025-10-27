@@ -1,0 +1,1 @@
+export { ArtistDetailsSection } from "./ArtistDetailsSection";

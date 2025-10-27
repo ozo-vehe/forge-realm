@@ -1,0 +1,51 @@
+{
+  "name": "Assassin's Dagger",
+  "description": "A perfectly balanced throwing knife favored by stealthy assassins and rogues. This razor-sharp blade is designed for precision strikes and can be thrown with deadly accuracy. Its lightweight construction allows for quick, silent attacks.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmPgTghrYX6NcqtFumuqC1jcyz1fcrCxPs7VuvcAJdDV5Q",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Weapon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Attack Power",
+      "value": 65
+    },
+    {
+      "trait_type": "Durability",
+      "value": "Medium"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Fine Steel"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Very Light"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Throwing"
+    },
+    {
+      "trait_type": "Speed",
+      "value": "Very Fast"
+    },
+    {
+      "trait_type": "Stealth",
+      "value": "Silent"
+    },
+    {
+      "trait_type": "Range",
+      "value": "Short"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

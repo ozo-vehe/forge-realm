@@ -1,0 +1,35 @@
+{
+  "name": "Warrior's Helmet",
+  "description": "A legendary warrior's helmet forged in the fires of ancient battles. This protective headgear has witnessed countless wars and carries the spirit of fallen heroes. Its design reflects both strength and honor.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/Qmcg2JmRuAF1a1YpX41FB1jtGNXPoB6LczgEJn82K95aw2",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Armor"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Defense",
+      "value": 85
+    },
+    {
+      "trait_type": "Durability",
+      "value": "High"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Forged Steel"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Protection"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

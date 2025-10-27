@@ -1,0 +1,43 @@
+{
+  "name": "Battle Axe",
+  "description": "A formidable two-handed battle axe forged by master blacksmiths. This heavy weapon delivers devastating blows and can cleave through armor with ease. Its weight makes it slow but incredibly powerful in the hands of a skilled warrior.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmRHSnAPYt4XGTqjYg5npGsiLEtwb5EvGqejqQte49JTiQ",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Weapon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Rare"
+    },
+    {
+      "trait_type": "Attack Power",
+      "value": 95
+    },
+    {
+      "trait_type": "Durability",
+      "value": "High"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Forged Steel"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Heavy"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Armor Crushing"
+    },
+    {
+      "trait_type": "Reach",
+      "value": "Long"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

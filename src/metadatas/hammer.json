@@ -1,0 +1,51 @@
+{
+  "name": "Thunder Hammer",
+  "description": "A massive war hammer imbued with the power of storms. This legendary weapon crackles with electrical energy and can deliver earth-shattering blows. When struck against the ground, it creates thunderous shockwaves that can knock down enemies.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmPXgnF88zfyxGe6YUkyZ2aBZT9j8P684GAy5d7Xe4F6v9",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Weapon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Legendary"
+    },
+    {
+      "trait_type": "Attack Power",
+      "value": 98
+    },
+    {
+      "trait_type": "Durability",
+      "value": "Very High"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Storm-forged Steel"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Very Heavy"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Thunder Strike"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Lightning"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Storm"
+    },
+    {
+      "trait_type": "Shockwave",
+      "value": "Yes"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

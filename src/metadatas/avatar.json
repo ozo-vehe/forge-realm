@@ -1,0 +1,31 @@
+{
+  "name": "Viking Warrior (with Hair)",
+  "description": "A fierce Viking avatar featuring long flowing hair, braided into traditional warrior styles. This avatar wears a sturdy helmet adorned with horns and sports a rugged beard, embodying the spirit and strength of Norse legends.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmZCcGNErETaft42u1JgzjyjBqoJTyM4rvvajqPmLGSckA",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Foundation"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Common"
+    },
+    {
+      "trait_type": "Element",
+      "value": "Earth"
+    },
+    {
+      "trait_type": "Power Level",
+      "value": 1
+    },
+    {
+      "trait_type": "Material",
+      "value": "Ancient Stone"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}

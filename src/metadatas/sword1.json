@@ -1,0 +1,43 @@
+{
+  "name": "Hero's Blade",
+  "description": "A finely crafted sword that has been wielded by heroes throughout the ages. This legendary weapon is perfectly balanced and razor-sharp, capable of cutting through the toughest armor. Its blade gleams with the light of justice.",
+  "image": "https://intellectual-emerald-elephant.myfilebase.com/ipfs/QmVedhgLHW9pWD95G7mggXNT6Q8ZfdqwYv2isUwqcQPnBf",
+  "external_url": "",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Weapon"
+    },
+    {
+      "trait_type": "Rarity",
+      "value": "Epic"
+    },
+    {
+      "trait_type": "Attack Power",
+      "value": 88
+    },
+    {
+      "trait_type": "Durability",
+      "value": "Very High"
+    },
+    {
+      "trait_type": "Material",
+      "value": "Mithril"
+    },
+    {
+      "trait_type": "Enchantment",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Weight",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Special Ability",
+      "value": "Armor Piercing"
+    }
+  ],
+  "background_color": "000000",
+  "animation_url": "",
+  "youtube_url": ""
+}
