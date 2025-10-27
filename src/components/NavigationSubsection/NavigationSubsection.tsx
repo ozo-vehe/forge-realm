@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { MenuIcon, Wallet } from "lucide-react"
-import { usePushWalletContext, PushUniversalAccountButton } from "@pushchain/ui-kit";
+import { usePushWalletContext } from "@pushchain/ui-kit";
 
 const navigationItems = [
   { label: "Marketplace", url: "/marketplace" },
@@ -40,7 +40,11 @@ export const NavigationSubsection = (): JSX.Element => {
           </NavLink>
         ))}
         {universalAccount ? (
-          <PushUniversalAccountButton />
+          <NavLink to="/profile" className="h-auto flex items-center justify-center gap-3 px-[25px] py-[12px] rounded-[30px] transition-all duration-[0.3s] ease-[ease] bg-transparent hover:bg-[#a259ff]/10">
+            <span className="[font-family:'Work_Sans',Helvetica] font-semibold text-[#ffffff] text-base text-center tracking-[0] leading-[22.4px] whitespace-nowrap">
+              Profile
+            </span>
+          </NavLink>
         ) : (
           <NavLink to="/connect-wallet" className="h-[50px] sm:h-[60px] px-4 sm:px-6 lg:px-[30px] bg-call-to-action rounded-[20px] transition-all duration-[0.3s] ease-[ease] hover:bg-call-to-action/90 items-center lg:flex md:flex hidden relative text-white">
             <Wallet className="w-5 h-5 mr-2 sm:mr-3" />

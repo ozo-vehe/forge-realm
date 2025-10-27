@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
-import { useEffect } from "react";
-import { usePushWalletContext } from "@pushchain/ui-kit";
+import { useEffect, useState } from "react";
+import { usePushWalletContext, PushUniversalAccountButton } from "@pushchain/ui-kit";
 import { useNavigate } from "react-router-dom";
 
 const statistics = [
@@ -23,7 +23,8 @@ export const ArtistDetailsSection = (): JSX.Element => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(!universalAccount) {
+    console.log(universalAccount)
+    if(!universalAccount?.address) {
       window.location.reload();
       navigate("/")
     }
@@ -35,7 +36,7 @@ export const ArtistDetailsSection = (): JSX.Element => {
         <div className="flex items-start gap-[100px] w-full">
           <div className="flex-1 max-w-[599px] gap-[30px] flex flex-col items-start">
             <h1 className="w-full max-w-[510px] font-h2-work-sans font-[number:var(--h2-work-sans-font-weight)] text-white text-[length:var(--h2-work-sans-font-size)] tracking-[var(--h2-work-sans-letter-spacing)] leading-[var(--h2-work-sans-line-height)] [font-style:var(--h2-work-sans-font-style)]">
-              Animakid
+              Realm Master
             </h1>
 
             <div className="flex w-full max-w-[510px] items-start gap-5 rounded-[20px]">
@@ -80,13 +81,14 @@ export const ArtistDetailsSection = (): JSX.Element => {
             </div>
           </div>
 
-          <div className="inline-flex items-start justify-end gap-5">
-            <Button className="h-auto items-center justify-center gap-3 px-[30px] py-[19px] rounded-[20px] border-2 border-solid border-[#a259ff] transition-all duration-[0.3s] ease-[ease] bg-transparent hover:bg-[#a259ff]/10">
+          <div className="inline-flex items-center justify-end gap-5">
+            <Button className="h-auto items-center justify-center gap-3 px-[25px] py-[12px] rounded-[12px] border-2 border-solid border-[#a259ff] transition-all duration-[0.3s] ease-[ease] bg-transparent hover:bg-[#a259ff]/10">
               <PlusIcon className="w-5 h-5" />
               <span className="[font-family:'Work_Sans',Helvetica] font-semibold text-[#ffffff] text-base text-center tracking-[0] leading-[22.4px] whitespace-nowrap">
                 Follow
               </span>
             </Button>
+            <PushUniversalAccountButton />
           </div>
         </div>
       </div>

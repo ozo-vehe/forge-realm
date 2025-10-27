@@ -9,16 +9,27 @@ import {
 } from "../../../../components/ui/tabs";
 import { supabase } from "../../../../lib/supabase";
 import NftCard from "../../../../components/ui/nft-card";
-import { ethers } from "ethers"
+import { ethers, Contract, parseEther } from "ethers"
 import baseJson from "../../../../contract/abi/BaseNFT.json"
-import { baseNftContractAddress } from "../../../../contract/address";
+import assetJson from "../../../../contract/abi/TraitNFT.json";
+import { baseNftContractAddress, traitNftContractAddress } from "../../../../contract/address";
+import { usePushChainClient, usePushChain, usePushWalletContext } from "@pushchain/ui-kit";
+
+type LoadingState = "none" | "mint";
 
 export const MarketplaceSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState("avatars");
   const [assetsData, setAssetsData] = useState<any[]>([]);
   const [avatarData, setAvatarData] = useState<any[]>([]);
+  const [txHash, setTxHash] = useState<string | null>(null);
 
-  const fetchData = async (tableName: string, uri: string): Promise<any[]> => {
+  const [loadingState, setLoadingState] = useState<LoadingState>("none");
+
+  const { pushChainClient } = usePushChainClient()
+  const { universalAccount } = usePushWalletContext()
+  const { PushChain } = usePushChain()
+
+  const fetchAvatarData = async (tableName: string, uri: string): Promise<any[]> => {
     console.log(uri);
     try {
       const { data, error } = await supabase
@@ -28,11 +39,13 @@ export const MarketplaceSection = (): JSX.Element => {
       if (error) throw error;
 
       if (data) {
-        // Properly await all fetches and get the resulting metadata objects
+        // Properly await all fetches and get the resulting metadata objects and original uri
         const jsonData = await Promise.all(
           data.map(async (d: any) => {
-            const req = await fetch(`https://intellectual-emerald-elephant.myfilebase.com/ipfs/${d.cid}`);
-            return req.json();
+            const uri = `https://intellectual-emerald-elephant.myfilebase.com/ipfs/${d.cid}`;
+            const req = await fetch(uri);
+            const metadata = await req.json();
+            return { ...metadata, uri }; // include the uri in the returned object
           })
         );
 
@@ -45,35 +58,112 @@ export const MarketplaceSection = (): JSX.Element => {
     }
   }
 
-  const interactWithSC = async () => {
+  const fetchAssetData = async (tableName: string, uri: string): Promise<any[]> => {
+    console.log(uri);
     try {
-      const provider = new ethers.JsonRpcProvider("https://evm.rpc-testnet-donut-node1.push.org/")
-      const contract = new ethers.Contract(baseNftContractAddress, baseJson, provider);
+      const { data, error } = await supabase
+        .from(tableName)
+        .select("*")
 
-      console.log(contract);
-      const id = contract._nextId
-      if(id) {
-        for (let i = 1; i < Number(id); i++){
-          const uri = await contract.tokenURI(i)
-          console.log(uri)
-        }
+      if (error) throw error;
+
+      if (data) {
+        // Properly await all fetches and get the resulting metadata objects and original uri
+        const jsonData = await Promise.all(
+          data.map(async (d: any) => {
+            const uri = `https://intellectual-emerald-elephant.myfilebase.com/ipfs/${d.cid}`;
+            const req = await fetch(uri);
+            const metadata = await req.json();
+            return { ...metadata, uri }; // include the uri in the returned object
+          })
+        );
+
+        return jsonData;
       }
-      const tokenURI = await contract.tokenURI(0);
-      console.log(tokenURI);
+      return []
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      console.log(message)
+      console.log(error)
+      return []
     }
+  }
+
+  const getMintAvatarData = async (abi: any, functionName: string, uri: string) => {
+    return PushChain.utils.helpers.encodeTxData({
+      abi,
+      functionName,
+      args: [universalAccount?.address, uri]
+    });
+  }
+
+  const getMintAssetTxData = async (abi: any, functionName: string, tokenId: string | number, amount: string | number) => {
+    return PushChain.utils.helpers.encodeTxData({
+      abi,
+      functionName,
+      args: [tokenId, amount]
+    });
+  }
+
+  const handleMintAvatar = async (uri: string) => {
+    // const baseContract = await contractSetup(baseNftContractAddress, baseJson);
+    if (pushChainClient) {
+      try {
+        setLoadingState("mint");
+        const data = await getMintAvatarData(baseJson, "mint", uri);
+
+        const tx = await pushChainClient.universal.sendTransaction({
+          to: baseNftContractAddress as `0x${string}`,
+          value: parseEther("0.01"),
+          data: data,
+        });
+
+        setTxHash(tx.hash);
+        await tx.wait();
+        // await fetchCounters();
+        setLoadingState("none");
+      } catch (err) {
+        console.error('Transaction error:', err);
+        setLoadingState("none");
+      }
+    }
+    // if(type == "avatar") console.log(uri);
+    // else console.log(uri)
+  }
+
+  const handleMintAsset = async (tokenId: string | number) => {
+    // const baseContract = await contractSetup(baseNftContractAddress, baseJson);
+    if (pushChainClient) {
+      try {
+        setLoadingState("mint");
+        const data = await getMintAssetTxData(assetJson, "mint", tokenId, 1);
+        const tx = await pushChainClient.universal.sendTransaction({
+          to: traitNftContractAddress,
+          value: parseEther("0.01"),
+          data: data,
+        });
+
+        setTxHash(tx.hash);
+        await tx.wait();
+        // await fetchCounters();
+        setLoadingState("none");
+      } catch (err) {
+        console.error('Transaction error:', err);
+        setLoadingState("none");
+      }
+    }
+    // if(type == "avatar") console.log(uri);
+    // else console.log(uri)
   }
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const assets = await fetchData("assets", "");
-      const avatars = await fetchData("avatars", "");
+      const assets = await fetchAvatarData("assets", "");
+      const avatars = await fetchAvatarData("avatars", "");
+
+      console.log(assets)
+      console.log(avatars)
 
       setAssetsData(assets);
       setAvatarData(avatars)
-      await interactWithSC();
     }
 
     fetchAllData();
@@ -136,7 +226,7 @@ export const MarketplaceSection = (): JSX.Element => {
                   <div className="flex flex-col gap-10">
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
                       {avatarData?.map((avatar, index) => (
-                        <NftCard key={index} name={avatar.name} image={avatar.image} />
+                        <NftCard key={index} name={avatar.name} image={avatar.image} onMint={() => handleMintAvatar(avatar.uri)} />
                       ))}
                     </div>
                   </div>
@@ -151,14 +241,14 @@ export const MarketplaceSection = (): JSX.Element => {
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
                       {assetsData?.map((asset, index) => (
 
-                        <NftCard key={index} name={asset.name} image={asset.image} />
+                        <NftCard key={index} name={asset.name} image={asset.image} onMint={() => handleMintAsset(asset.uri)} />
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
             </TabsContent>
-
+            {/* 
             <TabsContent value="mint">
               <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
                 <div className="w-full max-w-5xl text-white px-2">
@@ -166,7 +256,7 @@ export const MarketplaceSection = (): JSX.Element => {
                     <h2 className="text-3xl font-semibold">Avatars</h2>
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
                       {avatarData?.map((avatar, index) => (
-                        <NftCard key={index} name={avatar.name} image={avatar.image} />
+                        <NftCard key={index} name={avatar.name} image={avatar.image}  />
                       ))}
                     </div>
                   </div>
@@ -177,13 +267,13 @@ export const MarketplaceSection = (): JSX.Element => {
                     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
                       {assetsData?.map((asset, index) => (
 
-                        <NftCard key={index} name={asset.name} image={asset.image} />
+                        <NftCard type="asset" key={index} name={asset.name} image={asset.image} uri={asset.uri}  />
                       ))}
                     </div>
                   </div>
                 </div>
               </div>
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </div>
       </div>

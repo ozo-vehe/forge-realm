@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Badge } from "../../../../components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { Avatar, AvatarImage } from "../../../../components/ui/avatar";
+import { usePushWalletContext } from "@pushchain/ui-kit";
+import { ethers } from "ethers";
+import baseJson from "../../../../contract/abi/BaseNFT.json";
+import assetJson from "../../../../contract/abi/TraitNFT.json";
+import { baseNftContractAddress, traitNftContractAddress } from "../../../../contract/address";
+import NftCard from "../../../../components/ui/nft-card";
+import { Button } from "../../../../components/ui/button";
 
 type NftItem = {
   id: number;
@@ -13,6 +20,19 @@ type NftItem = {
   price: string;
   highestBid: string;
   creator: string;
+};
+
+
+interface Metadata {
+  animation_url: string;
+  attributes: Array<Record<string, any>>;
+  background_color: string;
+  description: string;
+  external_url: string;
+  image: string;
+  name: string;
+  uri: string;
+  youtube_url: string;
 };
 // const tabs = [
 //   {
@@ -34,9 +54,66 @@ type NftItem = {
 
 export const MainContentSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState("created")
-  const [created, setCreated] = useState<NftItem []>([]);
-  const [assets, setAssets] = useState([]);
-  const [avatars, setAvatars] = useState([]);
+  const [created, setCreated] = useState<NftItem[]>([]);
+  const [assets, setAssets] = useState<Metadata[]>([]);
+  const [avatars, setAvatars] = useState<Metadata[]>([]);
+
+  const { universalAccount } = usePushWalletContext()
+
+  // To avoid duplicates, fetch all avatars first and then update state once
+  const fetchUserAvatars = async () => {
+    try {
+      const provider = new ethers.JsonRpcProvider(
+        'https://evm.rpc-testnet-donut-node1.push.org/'
+      );
+      const contract = new ethers.Contract(baseNftContractAddress, baseJson, provider);
+
+      const id = await contract.nextId();
+      const avatarsArr: Metadata[] = [];
+      for (let i = 1; i <= Number(id); i++) {
+        const uri = await contract.tokenURI(i);
+        const req = await fetch(uri)
+        const res = await req.json();
+
+        const data = { ...res, uri };
+        console.log(data);
+        avatarsArr.push(data);
+      }
+      setAvatars(avatarsArr);
+    } catch (err) {
+      console.error('Error fetching counter values:', err as Error);
+    }
+  }
+
+  const fetchUserAssets = async () => {
+    try {
+      const provider = new ethers.JsonRpcProvider(
+        'https://evm.rpc-testnet-donut-node1.push.org/'
+      );
+      const contract = new ethers.Contract(traitNftContractAddress, assetJson, provider);
+
+      const id = contract._nextTypeId;
+      console.log(id);
+      const assetsArr: Metadata[] = [];
+      for (let i = 1; i <= Number(id); i++) {
+        const uri = await contract.uri(i);
+        const req = await fetch(uri)
+        const res = await req.json();
+
+        const data = { ...res, uri };
+        console.log(data);
+        assetsArr.push(data);
+      }
+      setAssets(assetsArr);
+    } catch (err) {
+      console.error('Error fetching counter values:', err as Error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserAvatars()
+    fetchUserAssets()
+  }, [universalAccount])
 
   return (
     <section className="flex flex-col items-center gap-2.5 w-full bg-app-background">
@@ -87,19 +164,7 @@ export const MainContentSection = (): JSX.Element => {
                 Created
               </span>
               <Badge className="px-2 bg-[#858584] rounded-full">
-                <span className="text-white font-base-body-space-mono">302</span>
-              </Badge>
-            </TabsTrigger>
-            <TabsTrigger
-              value="assets"
-              className={`flex-1 flex items-center justify-center gap-2 h-14 ${activeTab === "assets" ? "border-b-4 border-gray-500" : "border-b-4 border-[#2b2b2b]"
-                }`}
-            >
-              <span className="font-h5-work-sans text-white">
-                Assets
-              </span>
-              <Badge className="px-2 bg-background-secondary rounded-full">
-                <span className="text-white font-base-body-space-mono">67</span>
+                <span className="text-white font-base-body-space-mono">{created.length}</span>
               </Badge>
             </TabsTrigger>
             <TabsTrigger
@@ -111,12 +176,31 @@ export const MainContentSection = (): JSX.Element => {
                 Avatars
               </span>
               <Badge className="px-2 bg-background-secondary rounded-full">
-                <span className="text-white font-base-body-space-mono">67</span>
+                <span className="text-white font-base-body-space-mono">{avatars.length}</span>
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger
+              value="assets"
+              className={`flex-1 flex items-center justify-center gap-2 h-14 ${activeTab === "assets" ? "border-b-4 border-gray-500" : "border-b-4 border-[#2b2b2b]"
+                }`}
+            >
+              <span className="font-h5-work-sans text-white">
+                Assets
+              </span>
+              <Badge className="px-2 bg-background-secondary rounded-full">
+                <span className="text-white font-base-body-space-mono">{assets.length}</span>
               </Badge>
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="created">
+            <div className="flex justify-end mb-6">
+              <Button className="h-auto items-center justify-center gap-3 px-[25px] py-[12px] rounded-[12px] border-2 border-solid border-[#a259ff] transition-all duration-[0.3s] ease-[ease] bg-transparent hover:bg-[#a259ff]/10">
+              <span className="[font-family:'Work_Sans',Helvetica] font-semibold text-[#ffffff] text-base text-center tracking-[0] leading-[22.4px] whitespace-nowrap">
+                Create New Character
+              </span>
+            </Button>
+            </div>
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
               <div
                 className="
@@ -181,91 +265,12 @@ export const MainContentSection = (): JSX.Element => {
           <TabsContent value="assets">
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
               <div className="w-full max-w-5xl text-white px-2">
-                <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
-                  Asset Collections
-                </h2>
                 <div className="flex flex-col gap-10">
-                  {[
-                    {
-                      category: "Helmets",
-                      assets: [
-                        {
-                          img: "/assets/helmet1.png",
-                          alt: "Helmet 1",
-                          name: "Viking Helmet",
-                        },
-                        {
-                          img: "/assets/helmet2.png",
-                          alt: "Helmet 2",
-                          name: "Samurai Kabuto",
-                        },
-                        {
-                          img: "/assets/helmet3.png",
-                          alt: "Helmet 3",
-                          name: "Space Explorer",
-                        },
-                      ],
-                    },
-                    {
-                      category: "Shields",
-                      assets: [
-                        {
-                          img: "/assets/shield1.png",
-                          alt: "Shield 1",
-                          name: "Knight Shield",
-                        },
-                        {
-                          img: "/assets/shield2.png",
-                          alt: "Shield 2",
-                          name: "Dragon Aegis",
-                        },
-                        {
-                          img: "/assets/shield3.png",
-                          alt: "Shield 3",
-                          name: "Futuristic Barrier",
-                        },
-                      ],
-                    },
-                    {
-                      category: "Weapons",
-                      assets: [
-                        {
-                          img: "/assets/weapon1.png",
-                          alt: "Weapon 1",
-                          name: "Excalibur Sword",
-                        },
-                        {
-                          img: "/assets/weapon2.png",
-                          alt: "Weapon 2",
-                          name: "Blaster Rifle",
-                        },
-                        {
-                          img: "/assets/weapon3.png",
-                          alt: "Weapon 3",
-                          name: "Crystal Staff",
-                        },
-                      ],
-                    },
-                  ].map(({ category, assets }) => (
-                    <div key={category}>
-                      <h3 className="text-lg md:text-xl font-semibold mb-4">{category}</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {assets.map(asset => (
-                          <div
-                            key={asset.name}
-                            className="bg-background-secondary rounded-xl p-4 flex flex-col items-center shadow hover:shadow-lg transition"
-                          >
-                            <img
-                              src={asset.img}
-                              alt={asset.alt}
-                              className="w-full max-w-[160px] aspect-square object-cover rounded-lg"
-                            />
-                            <p className="mt-3 font-medium">{asset.name}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+                    {assets?.map((asset, index) => (
+                      <NftCard key={index} name={asset.name} image={asset.image} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -275,87 +280,11 @@ export const MainContentSection = (): JSX.Element => {
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
               <div className="w-full max-w-5xl text-white px-2">
                 <div className="flex flex-col gap-10">
-                  {[
-                    {
-                      category: "Helmets",
-                      assets: [
-                        {
-                          img: "/assets/helmet1.png",
-                          alt: "Helmet 1",
-                          name: "Viking Helmet",
-                        },
-                        {
-                          img: "/assets/helmet2.png",
-                          alt: "Helmet 2",
-                          name: "Samurai Kabuto",
-                        },
-                        {
-                          img: "/assets/helmet3.png",
-                          alt: "Helmet 3",
-                          name: "Space Explorer",
-                        },
-                      ],
-                    },
-                    {
-                      category: "Shields",
-                      assets: [
-                        {
-                          img: "/assets/shield1.png",
-                          alt: "Shield 1",
-                          name: "Knight Shield",
-                        },
-                        {
-                          img: "/assets/shield2.png",
-                          alt: "Shield 2",
-                          name: "Dragon Aegis",
-                        },
-                        {
-                          img: "/assets/shield3.png",
-                          alt: "Shield 3",
-                          name: "Futuristic Barrier",
-                        },
-                      ],
-                    },
-                    {
-                      category: "Weapons",
-                      assets: [
-                        {
-                          img: "/assets/weapon1.png",
-                          alt: "Weapon 1",
-                          name: "Excalibur Sword",
-                        },
-                        {
-                          img: "/assets/weapon2.png",
-                          alt: "Weapon 2",
-                          name: "Blaster Rifle",
-                        },
-                        {
-                          img: "/assets/weapon3.png",
-                          alt: "Weapon 3",
-                          name: "Crystal Staff",
-                        },
-                      ],
-                    },
-                  ].map(({ category, assets }) => (
-                    <div key={category}>
-                      <h3 className="text-lg md:text-xl font-semibold mb-4">{category}</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {assets.map(asset => (
-                          <div
-                            key={asset.name}
-                            className="bg-background-secondary rounded-xl p-4 flex flex-col items-center shadow hover:shadow-lg transition"
-                          >
-                            <img
-                              src={asset.img}
-                              alt={asset.alt}
-                              className="w-full max-w-[160px] aspect-square object-cover rounded-lg"
-                            />
-                            <p className="mt-3 font-medium">{asset.name}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+                    {avatars?.map((avatar, index) => (
+                      <NftCard key={index} name={avatar.name} image={avatar.image} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
