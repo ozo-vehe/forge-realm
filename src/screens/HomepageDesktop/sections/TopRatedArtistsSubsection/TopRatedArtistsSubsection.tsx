@@ -7,20 +7,26 @@ import {
 import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
+// @ts-ignore
+import av1 from "../../../../assets/images/av1.png"
+// @ts-ignore
+import av2 from "../../../../assets/images/av2.png"
+// @ts-ignore
+import av3 from "../../../../assets/images/av3.png"
 
 const creators = [
-  { id: 1, name: "Keepitreal", sales: "34.53 ETH", rank: 1 },
-  { id: 2, name: "Digilab", sales: "34.53 ETH", rank: 2 },
-  { id: 3, name: "Gravityone", sales: "34.53 ETH", rank: 3 },
-  { id: 4, name: "Juanie", sales: "34.53 ETH", rank: 4 },
-  { id: 5, name: "Bluewhale", sales: "34.53 ETH", rank: 5 },
-  { id: 6, name: "Mr Fox", sales: "34.53 ETH", rank: 6 },
-  { id: 7, name: "Shroomie", sales: "34.53 ETH", rank: 7 },
-  { id: 8, name: "Robotica", sales: "34.53 ETH", rank: 8 },
-  { id: 9, name: "Rustyrobot", sales: "34.53 ETH", rank: 9 },
-  { id: 10, name: "Animakid", sales: "34.53 ETH", rank: 10 },
-  { id: 11, name: "Dotgu", sales: "34.53 ETH", rank: 11 },
-  { id: 12, name: "Ghiblier", sales: "34.53 ETH", rank: 12 },
+  { id: 1, image: av1, name: "Keepitreal", sales: "34.53 ETH", rank: 1 },
+  { id: 2, image: av2, name: "Digilab", sales: "34.53 ETH", rank: 2 },
+  { id: 3, image: av3, name: "Gravityone", sales: "34.53 ETH", rank: 3 },
+  { id: 4, image: av2, name: "Juanie", sales: "34.53 ETH", rank: 4 },
+  { id: 5, image: av1, name: "Bluewhale", sales: "34.53 ETH", rank: 5 },
+  { id: 6, image: av3, name: "Mr Fox", sales: "34.53 ETH", rank: 6 },
+  { id: 7, image: av2, name: "Shroomie", sales: "34.53 ETH", rank: 7 },
+  { id: 8, image: av1, name: "Robotica", sales: "34.53 ETH", rank: 8 },
+  { id: 9, image: av3, name: "Rustyrobot", sales: "34.53 ETH", rank: 9 },
+  { id: 10, image: av1, name: "Animakid", sales: "34.53 ETH", rank: 10 },
+  { id: 11, image: av2, name: "Dotgu", sales: "34.53 ETH", rank: 11 },
+  { id: 12, image: av3, name: "Ghiblier", sales: "34.53 ETH", rank: 12 },
 ];
 
 export const TopRatedArtistsSubsection = (): JSX.Element => {
@@ -60,7 +66,7 @@ export const TopRatedArtistsSubsection = (): JSX.Element => {
             <CardContent className="flex flex-col items-center gap-5 p-0 w-full">
               <div className="flex flex-col items-end">
                 <Avatar className="w-[120px] h-[120px]">
-                  <AvatarImage src="" alt={creator.name} />
+                  <AvatarImage src={creator.image} alt={creator.name} />
                   <AvatarFallback className="bg-cover bg-[50%_50%]" />
                 </Avatar>
               </div>

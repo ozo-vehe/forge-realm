@@ -1,7 +1,8 @@
 import { MailIcon } from "lucide-react";
-import React from "react";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
+// @ts-ignore
+import newsletter from "../../../../assets/images/newsletter.png"
 
 export const SubscribeWidgetSubsection = (): JSX.Element => {
   return (
@@ -10,7 +11,7 @@ export const SubscribeWidgetSubsection = (): JSX.Element => {
         <img
           className="flex-1 w-full lg:w-auto h-[250px] sm:h-[310px] object-cover rounded-[10px]"
           alt="Photo"
-          src="https://cdn.animaapp.com/projects/6183b51d6b5cbed9b6a0c937/releases/6183b5d4be8d7c64e2c9e5e7/img/photo-1@2x.png"
+          src={newsletter}
         />
 
         <div className="flex-col w-full lg:w-[425px] items-start gap-6 lg:gap-10 flex">

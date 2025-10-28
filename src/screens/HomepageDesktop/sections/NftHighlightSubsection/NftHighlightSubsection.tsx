@@ -3,6 +3,7 @@ import React from "react";
 import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
+// import mushroom from "../../../../assets/images/"
 
 const timerData = [
   { value: "59", label: "Hours" },
@@ -13,7 +14,7 @@ const timerData = [
 export const NftHighlightSubsection = (): JSX.Element => {
   return (
     <section className="flex flex-col items-center relative w-full bg-cover bg-[50%_50%]">
-      <div className="items-end justify-center pt-[200px] sm:pt-[280px] md:pt-[360px] pb-[40px] sm:pb-[60px] px-5 sm:px-8 md:px-12 lg:px-20 xl:px-[195px] bg-[linear-gradient(180deg,rgba(162,89,255,0)_0%,rgba(162,89,255,1)_100%)] flex relative w-full">
+      <div className="items-end justify-center pt-[200px] sm:pt-[280px] md:pt-[360px] pb-[40px] sm:pb-[60px] px-5 sm:px-8 md:px-12 lg:px-20 xl:px-[195px] bg-[url(./mushroom.png)] bg-cover flex relative w-full">
         <div className="w-full max-w-[1050px] items-end justify-center flex flex-col lg:flex-row gap-[30px] lg:gap-0 relative">
           <div className="flex flex-col items-start gap-[20px] sm:gap-[30px] relative flex-1 w-full">
             <Badge className="inline-flex gap-3 px-5 py-2.5 items-center bg-[#3b3b3b] rounded-[20px] hover:bg-[#3b3b3b] h-auto">

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Avatar,
   AvatarFallback,
@@ -6,30 +5,36 @@ import {
 } from "../../../../components/ui/avatar";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { ScrollArea, ScrollBar } from "../../../../components/ui/scroll-area";
+// @ts-ignore
+import pry1 from "../../../../assets/images/pry1.png"
+// @ts-ignore
+import pry2 from "../../../../assets/images/pry2.png"
+// @ts-ignore
+import pry3 from "../../../../assets/images/pry3.png"
 
 const collectionsData = [
   {
     title: "Dsgn Animals",
     creator: "MrFox",
     count: "1025+",
-    primaryImage: "",
-    secondaryImages: ["", ""],
+    primaryImage: pry1,
+    secondaryImages: [pry2, pry3],
     avatarImage: "",
   },
   {
     title: "Magic Mushrooms",
     creator: "Shroomie",
     count: "1025+",
-    primaryImage: "",
-    secondaryImages: ["", ""],
+    primaryImage: pry2,
+    secondaryImages: [pry1, pry3],
     avatarImage: "",
   },
   {
     title: "Disco Machines",
     creator: "BeKind2Robots",
     count: "1025+",
-    primaryImage: "",
-    secondaryImages: ["", ""],
+    primaryImage: pry3,
+    secondaryImages: [pry2, pry1],
     avatarImage: "",
   },
 ];
