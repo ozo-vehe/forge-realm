@@ -43,8 +43,7 @@ export const MarketplaceSection = (): JSX.Element => {
   const { universalAccount } = usePushWalletContext()
   const { PushChain } = usePushChain()
 
-  const fetchAvatarData = async (tableName: string, uri: string): Promise<any[]> => {
-    console.log(uri);
+  const fetchAvatarData = async (tableName: string): Promise<any[]> => {
     try {
       const { data, error } = await supabase
         .from(tableName)
@@ -73,26 +72,24 @@ export const MarketplaceSection = (): JSX.Element => {
   }
 
   const fetchAssetData = async (): Promise<Metadata[] | string> => {
+    console.log("==================================")
     try {
       const provider = new ethers.JsonRpcProvider(
         'https://evm.rpc-testnet-donut-node1.push.org/'
       );
       const contract = new ethers.Contract(traitNftContractAddress, assetJson, provider);
-
       const id = await contract.nextTypeId();
-      console.log(id)
       if (id) {
         const assetsArr: Metadata[] = [];
         for (let i = 1; i <= Number(id); i++) {
+          if (i === 2) continue;
           const uri = await contract.uri(i);
           const req = await fetch(uri)
           const res = await req.json();
 
           const data = { ...res, uri, tokenId: i };
-          console.log(data);
           assetsArr.push(data);
         }
-
         return assetsArr
       }
       return []
@@ -172,8 +169,7 @@ export const MarketplaceSection = (): JSX.Element => {
   useEffect(() => {
     const fetchAllData = async () => {
       setLoadingState("avatar")
-      const avatars = await fetchAvatarData("avatars", "");
-      console.log(avatars)
+      const avatars = await fetchAvatarData("avatars");
 
       setLoadingState("asset")
       const assets = await fetchAssetData();

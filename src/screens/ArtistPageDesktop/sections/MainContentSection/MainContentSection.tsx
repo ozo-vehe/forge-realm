@@ -4,26 +4,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components
 import { Card, CardContent } from "../../../../components/ui/card";
 import { Avatar, AvatarImage } from "../../../../components/ui/avatar";
 import { usePushWalletContext } from "@pushchain/ui-kit";
-import { ethers } from "ethers";
+import { ethers, uuidV4 } from "ethers";
 import baseJson from "../../../../contract/abi/BaseNFT.json";
 import assetJson from "../../../../contract/abi/TraitNFT.json";
 import { baseNftContractAddress, traitNftContractAddress } from "../../../../contract/address";
 import NftCard from "../../../../components/ui/nft-card";
 import { Button } from "../../../../components/ui/button";
-import { saveUserAvatar } from "../../../../lib/supabase";
+import { getCreatedCharacter, saveUserAvatar, saveUserCharacter, supabase } from "../../../../lib/supabase";
 import { CreateNewCharacterModal } from "../CreateNewCharacterSection";
+import { v4 } from "uuid"
+import { CreatedCharacterCard } from "../../../../components/CreatedCharacterCard";
 
-type NftItem = {
-  id: number;
-  title: string;
-  image: string;
-  avatar: string;
-  artist: string;
-  price: string;
-  highestBid: string;
-  creator: string;
-};
-
+interface CreatedCharacter {
+  id: string;
+  created_at: string;
+  avatar: Metadata;
+  armor: Metadata;
+  shield: Metadata;
+  weapon: Metadata | null;
+}
 
 interface Metadata {
   animation_url: string;
@@ -33,6 +32,7 @@ interface Metadata {
   external_url: string;
   image: string;
   name: string;
+  tokenId: string
   uri: string;
   youtube_url: string;
 };
@@ -56,9 +56,10 @@ interface Metadata {
 
 export const MainContentSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState("created")
-  const [created, setCreated] = useState<NftItem[]>([]);
+  const [created, setCreated] = useState<CreatedCharacter[] | null>(null);
   const [assets, setAssets] = useState<Metadata[]>([]);
   const [avatars, setAvatars] = useState<Metadata[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { universalAccount } = usePushWalletContext()
 
@@ -74,13 +75,15 @@ export const MainContentSection = (): JSX.Element => {
       const avatarsArr: Metadata[] = [];
       const uriArr: string[] = []
       for (let i = 1; i <= Number(id); i++) {
+        const owner = await contract.ownerOf(i);
+        console.log(owner)
+        if (owner !== universalAccount?.address) continue;
         const uri = await contract.tokenURI(i);
         const req = await fetch(uri)
         const res = await req.json();
 
         const data = { ...res, uri };
         uriArr.push(uri);
-        console.log(data);
         avatarsArr.push(data);
       }
 
@@ -102,13 +105,16 @@ export const MainContentSection = (): JSX.Element => {
       console.log(id);
       const assetsArr: Metadata[] = [];
       for (let i = 1; i <= Number(id); i++) {
-        const uri = await contract.uri(i);
-        const req = await fetch(uri)
-        const res = await req.json();
+        if (i === 2) continue
+        const hasMinted = await contract.hasMintedType(i, universalAccount?.address)
+        if (hasMinted) {
+          const uri = await contract.uri(i);
+          const req = await fetch(uri)
+          const res = await req.json();
 
-        const data = { ...res, uri };
-        console.log(data);
-        assetsArr.push(data);
+          const data = { ...res, uri };
+          assetsArr.push(data);
+        }
       }
       setAssets(assetsArr);
     } catch (err) {
@@ -116,13 +122,46 @@ export const MainContentSection = (): JSX.Element => {
     }
   }
 
-  const handleCreateNft = async () => {
-    console.log("Yes")
+  const handleCreateNftCharacter = async (avatar: Metadata, assets: Metadata[]) => {
+    setIsLoading(true);
+    const armor = assets.find((asset: Metadata) => asset.attributes[0].value.toLowerCase() === "armor")
+    const weapon = assets.find((asset: Metadata) => asset.attributes[0].value.toLowerCase() === "weapon")
+    const shield = assets.find((asset: Metadata) => asset.attributes[0].value.toLowerCase() === "shield")
+    console.log(armor);
+    console.log(weapon);
+    console.log(shield);
+
+    const { data, error } = await supabase
+      .from("characters")
+      .insert([{
+        id: v4(),
+        avatar,
+        armor: armor ? armor : null,
+        weapon: weapon ? weapon : null,
+        shield: shield ? shield : null
+      }])
+      .select();
+
+    if (error) throw error
+    if (data) {
+      const characterId = data[0].id
+      await saveUserCharacter(universalAccount?.address as `0x${string}`, characterId)
+    }
+    setIsLoading(false);
   }
 
+
+
   useEffect(() => {
-    fetchUserAvatars()
-    fetchUserAssets()
+    const fetchAllData = async () => {
+      if (universalAccount) {
+        fetchUserAvatars()
+        fetchUserAssets()
+        const createdCharacters = await getCreatedCharacter(universalAccount.address)
+        setCreated(createdCharacters as CreatedCharacter[])
+      }
+    }
+    fetchAllData();
   }, [universalAccount])
 
   return (
@@ -174,7 +213,7 @@ export const MainContentSection = (): JSX.Element => {
                 Created
               </span>
               <Badge className="px-2 bg-[#858584] rounded-full">
-                <span className="text-white font-base-body-space-mono">{created.length}</span>
+                <span className="text-white font-base-body-space-mono">{created?.length}</span>
               </Badge>
             </TabsTrigger>
             <TabsTrigger
@@ -205,64 +244,26 @@ export const MainContentSection = (): JSX.Element => {
 
           <TabsContent value="created">
             <div className="flex justify-end mb-6">
-              <CreateNewCharacterModal onCreate={handleCreateNft} assets={assets} avatars={avatars} />
+              <CreateNewCharacterModal onCreate={(avatar, assets) => handleCreateNftCharacter(avatar, assets)} assets={assets} avatars={new Array(...new Set(avatars))} isLoading={isLoading} />
             </div>
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
               <div
                 className="
-                    w-full 
+                    w-full
                     max-w-5xl
                     grid 
                     gap-6
                     grid-cols-1
-                    sm:grid-cols-2
+                    sm:grid-cols-3
                     md:grid-cols-3
                   "
               >
-                {created.map((nft) => (
-                  <Card
-                    key={nft.id}
-                    className="flex flex-col h-full items-center shadow rounded-2xl transition-shadow hover:shadow-lg border-gray-800 overflow-hidden cursor-pointer"
-                  >
-                    <img
-                      className="w-full h-72 sm:h-60 md:h-52 object-cover rounded-t-2xl"
-                      alt={nft.title}
-                      src={nft.image}
-                    />
-                    <CardContent className="flex flex-col gap-5 pt-5 pb-6 px-4 w-full">
-                      <div className="flex flex-col gap-2 w-full">
-                        <h3 className="font-h5-work-sans text-white">
-                          {nft.title}
-                        </h3>
-                        <div className="flex items-center gap-2 w-full">
-                          <Avatar className="w-6 h-6">
-                            <AvatarImage
-                              src={nft.avatar}
-                              alt={nft.creator}
-                              className="rounded-full object-cover"
-                            />
-                          </Avatar>
-                          <span className="text-white font-base-body-space-mono">
-                            {nft.creator}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex w-full gap-2">
-                        <div className="flex flex-col flex-1">
-                          <span className="text-[#858584] text-xs">Price</span>
-                          <span className="text-white font-base-body-space-mono">{nft.price}</span>
-                        </div>
-                        <div className="flex flex-col flex-1 items-end">
-                          <span className="text-[#858584] text-xs text-right">
-                            Highest Bid
-                          </span>
-                          <span className="text-white font-base-body-space-mono text-right">
-                            {nft.highestBid}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                {created?.map((nft: CreatedCharacter, index) => (
+                  <div key={index} className="group relative bg-gradient-to-br from-[#232526] to-[#414345] rounded-2xl overflow-hidden shadow-md hover:scale-105 transition-transform cursor-pointer flex flex-col items-center justify-center p-6 h-[230px]">
+                  <CreatedCharacterCard avatar={nft.avatar} armor={nft.armor} shield={nft.shield} weapon={nft.weapon} />
+
+                  <span className="text-white">{nft.avatar.name}</span>
+                  </div>
                 ))}
               </div>
             </div>

@@ -44,6 +44,17 @@ contract TraitNFT is ERC1155, Ownable {
     // Total supply per type
     mapping(uint256 => uint256) public totalSupplyOf;
 
+    // NEW: Track all minters for each type
+    mapping(uint256 => address[]) public mintersOf; // typeId => array of minters
+    mapping(uint256 => mapping(address => bool)) private hasMinted; // typeId => minter => true/false
+
+    // NEW: Track total minted per user per type
+    mapping(address => mapping(uint256 => uint256)) public mintedBy; // minter => typeId => amount
+
+    // NEW: Track all minters across all types
+    address[] private allMinters;
+    mapping(address => bool) private isRegisteredMinter;
+
     // Events
     event TraitTypeCreated(
         uint256 indexed typeId,
@@ -106,6 +117,10 @@ contract TraitNFT is ERC1155, Ownable {
         if (initialSupply > 0) {
             _mint(to, tid, initialSupply, "");
             totalSupplyOf[tid] += initialSupply;
+
+            // Track owner as initial minter
+            _trackMinter(to, tid, initialSupply);
+
             emit TraitMinted(tid, to, initialSupply);
         }
 
@@ -154,6 +169,10 @@ contract TraitNFT is ERC1155, Ownable {
         // Mint to msg.sender
         _mint(msg.sender, typeId, amount, "");
         totalSupplyOf[typeId] += amount;
+
+        // Track the minter
+        _trackMinter(msg.sender, typeId, amount);
+
         emit TraitMinted(typeId, msg.sender, amount);
 
         // Refund excess payment if any
@@ -176,6 +195,10 @@ contract TraitNFT is ERC1155, Ownable {
         require(typeId > 0 && typeId <= _nextTypeId, "Trait: invalid type");
         _mint(to, typeId, amount, "");
         totalSupplyOf[typeId] += amount;
+
+        // Track the minter
+        _trackMinter(to, typeId, amount);
+
         emit TraitMinted(typeId, to, amount);
     }
 
@@ -193,6 +216,9 @@ contract TraitNFT is ERC1155, Ownable {
                 "Trait: invalid type in batch"
             );
             totalSupplyOf[typeIds[i]] += amounts[i];
+
+            // Track each type
+            _trackMinter(to, typeIds[i], amounts[i]);
         }
         _mintBatch(to, typeIds, amounts, "");
         for (uint256 i = 0; i < typeIds.length; i++) {
@@ -218,6 +244,89 @@ contract TraitNFT is ERC1155, Ownable {
      */
     function getBalance() external view returns (uint256) {
         return address(this).balance;
+    }
+
+    // ======================
+    // Internal Tracking Function
+    // ======================
+
+    function _trackMinter(
+        address minter,
+        uint256 typeId,
+        uint256 amount
+    ) private {
+        // Track if this is first time minting this type
+        if (!hasMinted[typeId][minter]) {
+            mintersOf[typeId].push(minter);
+            hasMinted[typeId][minter] = true;
+        }
+
+        // Track total amount minted by this user for this type
+        mintedBy[minter][typeId] += amount;
+
+        // Track in global minters list
+        if (!isRegisteredMinter[minter]) {
+            allMinters.push(minter);
+            isRegisteredMinter[minter] = true;
+        }
+    }
+
+    // ======================
+    // View Functions for Minter Data
+    // ======================
+
+    /**
+     * @notice Get all addresses that have minted a specific type
+     * @param typeId the trait type
+     * @return array of minter addresses
+     */
+    function getMintersOf(
+        uint256 typeId
+    ) external view returns (address[] memory) {
+        return mintersOf[typeId];
+    }
+
+    /**
+     * @notice Get number of unique minters for a type
+     * @param typeId the trait type
+     * @return count of unique minters
+     */
+    function getMinterCount(uint256 typeId) external view returns (uint256) {
+        return mintersOf[typeId].length;
+    }
+
+    /**
+     * @notice Check if an address has minted a specific type
+     * @param typeId the trait type
+     * @param minter the address to check
+     * @return true if minter has minted this type
+     */
+    function hasMintedType(
+        uint256 typeId,
+        address minter
+    ) external view returns (bool) {
+        return hasMinted[typeId][minter];
+    }
+
+    /**
+     * @notice Get total amount minted by a user for a specific type
+     * @param minter the address
+     * @param typeId the trait type
+     * @return total amount minted
+     */
+    function getTotalMintedBy(
+        address minter,
+        uint256 typeId
+    ) external view returns (uint256) {
+        return mintedBy[minter][typeId];
+    }
+
+    /**
+     * @notice Get all unique minters across all types
+     * @return array of all minter addresses
+     */
+    function getAllMinters() external view returns (address[] memory) {
+        return allMinters;
     }
 
     // ======================
