@@ -57,7 +57,7 @@ export const NavigationSubsection = (): JSX.Element => {
       </div>
 
       {/* Mobile */}
-      <div className="">
+      <div className="lg:hidden md:hidden block">
         <MenuIcon onClick={() => setShowMenu(!showMenu)} className="lg:hidden md:hidden flex text-white" />
         {showMenu && <div className="flex flex-col p-4 lg:hidden md:hidden items-center justify-end gap-2 absolute top-16 left-0 bg-black w-full">
           {navigationItems.map((item, index) => (
