@@ -1,5 +1,4 @@
 import { RocketIcon } from "lucide-react";
-import React from "react";
 import { Button } from "../../../../components/ui/button";
 
 const stats = [
@@ -24,12 +23,11 @@ export const HeroSectionSubsection = (): JSX.Element => {
         <div className="flex flex-col items-start gap-[30px] flex-1 w-full">
           <div className="flex flex-col items-start gap-5 w-full">
             <h1 className="font-h1-work-sans font-[number:var(--h1-work-sans-font-weight)] text-white text-[28px] sm:text-[38px] md:text-[48px] lg:text-[length:var(--h1-work-sans-font-size)] tracking-[var(--h1-work-sans-letter-spacing)] leading-[1.2] sm:leading-[var(--h1-work-sans-line-height)] [font-style:var(--h1-work-sans-font-style)]">
-              Discover Digital Art &amp; Collect Nfts
+              Forge, Evolve &amp; Collect Dynamic NFTs
             </h1>
 
             <p className="font-body-text-work-sans font-[number:var(--body-text-work-sans-font-weight)] text-white text-[16px] sm:text-[length:var(--body-text-work-sans-font-size)] tracking-[var(--body-text-work-sans-letter-spacing)] leading-[1.6] sm:leading-[var(--body-text-work-sans-line-height)] [font-style:var(--body-text-work-sans-font-style)]">
-              Nft Marketplace Ui Created With Anima For Figma. Collect, Buy And
-              Sell Art From More Than 20k Nft Artists.
+            Enter the Forge Realm — a cross-chain universe where NFTs grow, merge, and transform beyond imagination.
             </p>
           </div>
 

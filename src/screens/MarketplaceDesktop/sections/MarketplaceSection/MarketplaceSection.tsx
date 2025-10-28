@@ -9,19 +9,33 @@ import {
 } from "../../../../components/ui/tabs";
 import { supabase } from "../../../../lib/supabase";
 import NftCard from "../../../../components/ui/nft-card";
-import { ethers, Contract, parseEther } from "ethers"
+import { ethers, parseEther } from "ethers"
 import baseJson from "../../../../contract/abi/BaseNFT.json"
 import assetJson from "../../../../contract/abi/TraitNFT.json";
 import { baseNftContractAddress, traitNftContractAddress } from "../../../../contract/address";
 import { usePushChainClient, usePushChain, usePushWalletContext } from "@pushchain/ui-kit";
+import { Loader2 } from "lucide-react";
 
-type LoadingState = "none" | "mint";
+type LoadingState = "none" | "mint" | "avatar" | "asset";
+
+interface Metadata {
+  animation_url: string;
+  attributes: Array<Record<string, any>>;
+  background_color: string;
+  description: string;
+  external_url: string;
+  image: string;
+  name: string;
+  uri: string;
+  youtube_url: string;
+  tokenId?: string | number
+};
 
 export const MarketplaceSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState("avatars");
-  const [assetsData, setAssetsData] = useState<any[]>([]);
-  const [avatarData, setAvatarData] = useState<any[]>([]);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [assetsData, setAssetsData] = useState<Metadata[]>([]);
+  const [avatarData, setAvatarData] = useState<Metadata[]>([]);
+  // const [txHash, setTxHash] = useState<string | null>(null);
 
   const [loadingState, setLoadingState] = useState<LoadingState>("none");
 
@@ -58,32 +72,33 @@ export const MarketplaceSection = (): JSX.Element => {
     }
   }
 
-  const fetchAssetData = async (tableName: string, uri: string): Promise<any[]> => {
-    console.log(uri);
+  const fetchAssetData = async (): Promise<Metadata[] | string> => {
     try {
-      const { data, error } = await supabase
-        .from(tableName)
-        .select("*")
+      const provider = new ethers.JsonRpcProvider(
+        'https://evm.rpc-testnet-donut-node1.push.org/'
+      );
+      const contract = new ethers.Contract(traitNftContractAddress, assetJson, provider);
 
-      if (error) throw error;
+      const id = await contract.nextTypeId();
+      console.log(id)
+      if (id) {
+        const assetsArr: Metadata[] = [];
+        for (let i = 1; i <= Number(id); i++) {
+          const uri = await contract.uri(i);
+          const req = await fetch(uri)
+          const res = await req.json();
 
-      if (data) {
-        // Properly await all fetches and get the resulting metadata objects and original uri
-        const jsonData = await Promise.all(
-          data.map(async (d: any) => {
-            const uri = `https://intellectual-emerald-elephant.myfilebase.com/ipfs/${d.cid}`;
-            const req = await fetch(uri);
-            const metadata = await req.json();
-            return { ...metadata, uri }; // include the uri in the returned object
-          })
-        );
+          const data = { ...res, uri, tokenId: i };
+          console.log(data);
+          assetsArr.push(data);
+        }
 
-        return jsonData;
+        return assetsArr
       }
       return []
     } catch (error) {
-      console.log(error)
-      return []
+      const message = error instanceof Error ? error.message : String(error)
+      return message
     }
   }
 
@@ -116,9 +131,9 @@ export const MarketplaceSection = (): JSX.Element => {
           data: data,
         });
 
-        setTxHash(tx.hash);
+        // setTxHash(tx.hash);
         await tx.wait();
-        // await fetchCounters();
+
         setLoadingState("none");
       } catch (err) {
         console.error('Transaction error:', err);
@@ -141,7 +156,7 @@ export const MarketplaceSection = (): JSX.Element => {
           data: data,
         });
 
-        setTxHash(tx.hash);
+        // setTxHash(tx.hash);
         await tx.wait();
         // await fetchCounters();
         setLoadingState("none");
@@ -156,14 +171,15 @@ export const MarketplaceSection = (): JSX.Element => {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const assets = await fetchAvatarData("assets", "");
+      setLoadingState("avatar")
       const avatars = await fetchAvatarData("avatars", "");
-
-      console.log(assets)
       console.log(avatars)
 
-      setAssetsData(assets);
+      setLoadingState("asset")
+      const assets = await fetchAssetData();
+      if (typeof assets !== "string") setAssetsData(assets);
       setAvatarData(avatars)
+      setLoadingState("none")
     }
 
     fetchAllData();
@@ -205,7 +221,7 @@ export const MarketplaceSection = (): JSX.Element => {
               </TabsTrigger>
 
               {/* Avatar and Assets Available for Minting */}
-              <TabsTrigger
+              {/* <TabsTrigger
                 value="mint"
                 className={`flex-1 flex items-center justify-center gap-2 h-14 ${activeTab === "mint" ? "border-b-4 border-gray-500" : "border-b-4 border-[#2b2b2b]"
                   }`}
@@ -216,7 +232,7 @@ export const MarketplaceSection = (): JSX.Element => {
                 <Badge className="px-2 bg-background-secondary rounded-full">
                   <span className="text-white font-base-body-space-mono">{avatarData.length + assetsData.length}</span>
                 </Badge>
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
 
 
@@ -224,11 +240,17 @@ export const MarketplaceSection = (): JSX.Element => {
               <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
                 <div className="w-full max-w-5xl text-white px-2">
                   <div className="flex flex-col gap-10">
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-                      {avatarData?.map((avatar, index) => (
-                        <NftCard key={index} name={avatar.name} image={avatar.image} onMint={() => handleMintAvatar(avatar.uri)} />
-                      ))}
-                    </div>
+                    {loadingState === "avatar" ? (
+                      <div className="flex justify-center items-center py-10">
+                        <Loader2 className="animate-spin text-gray-300 w-12 h-12" />
+                      </div>
+                    ) : (
+                      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+                        {avatarData?.map((avatar, index) => (
+                          <NftCard key={index} name={avatar.name} image={avatar.image} onMint={() => handleMintAvatar(avatar.uri)} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -238,42 +260,21 @@ export const MarketplaceSection = (): JSX.Element => {
               <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
                 <div className="w-full max-w-5xl text-white px-2">
                   <div className="flex flex-col gap-10">
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-                      {assetsData?.map((asset, index) => (
-
-                        <NftCard key={index} name={asset.name} image={asset.image} onMint={() => handleMintAsset(asset.uri)} />
-                      ))}
-                    </div>
+                    {loadingState === "asset" ? (
+                      <div className="flex justify-center items-center py-10">
+                        <Loader2 className="animate-spin text-gray-300 w-12 h-12" />
+                      </div>
+                    ) : (
+                      <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+                        {assetsData?.map((asset, index) => (
+                        <NftCard key={index} name={asset.name} image={asset.image} onMint={() => handleMintAsset(asset.tokenId as string)} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </TabsContent>
-            {/* 
-            <TabsContent value="mint">
-              <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
-                <div className="w-full max-w-5xl text-white px-2">
-                  <div className="flex mb-12 flex-col gap-6">
-                    <h2 className="text-3xl font-semibold">Avatars</h2>
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-                      {avatarData?.map((avatar, index) => (
-                        <NftCard key={index} name={avatar.name} image={avatar.image}  />
-                      ))}
-                    </div>
-                  </div>
-
-
-                  <div className="flex mb-12 flex-col gap-6">
-                    <h2 className="text-3xl font-semibold">Assets</h2>
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-                      {assetsData?.map((asset, index) => (
-
-                        <NftCard type="asset" key={index} name={asset.name} image={asset.image} uri={asset.uri}  />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabsContent> */}
           </Tabs>
         </div>
       </div>

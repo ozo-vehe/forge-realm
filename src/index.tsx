@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 import { router } from "./router/routes"
 import { RouterProvider } from "react-router-dom";
 import { PushChainProviders } from "./providers/PushChainProviders";
+// @ts-ignore
+import "./main.css";
+
 
 createRoot(document.getElementById("app") as HTMLElement).render(
   <StrictMode>

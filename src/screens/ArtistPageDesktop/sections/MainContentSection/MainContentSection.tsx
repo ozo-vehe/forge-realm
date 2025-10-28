@@ -10,6 +10,8 @@ import assetJson from "../../../../contract/abi/TraitNFT.json";
 import { baseNftContractAddress, traitNftContractAddress } from "../../../../contract/address";
 import NftCard from "../../../../components/ui/nft-card";
 import { Button } from "../../../../components/ui/button";
+import { saveUserAvatar } from "../../../../lib/supabase";
+import { CreateNewCharacterModal } from "../CreateNewCharacterSection";
 
 type NftItem = {
   id: number;
@@ -70,15 +72,19 @@ export const MainContentSection = (): JSX.Element => {
 
       const id = await contract.nextId();
       const avatarsArr: Metadata[] = [];
+      const uriArr: string[] = []
       for (let i = 1; i <= Number(id); i++) {
         const uri = await contract.tokenURI(i);
         const req = await fetch(uri)
         const res = await req.json();
 
         const data = { ...res, uri };
+        uriArr.push(uri);
         console.log(data);
         avatarsArr.push(data);
       }
+
+      await saveUserAvatar(universalAccount?.address as string, uriArr)
       setAvatars(avatarsArr);
     } catch (err) {
       console.error('Error fetching counter values:', err as Error);
@@ -92,7 +98,7 @@ export const MainContentSection = (): JSX.Element => {
       );
       const contract = new ethers.Contract(traitNftContractAddress, assetJson, provider);
 
-      const id = contract._nextTypeId;
+      const id = await contract.nextTypeId();
       console.log(id);
       const assetsArr: Metadata[] = [];
       for (let i = 1; i <= Number(id); i++) {
@@ -108,6 +114,10 @@ export const MainContentSection = (): JSX.Element => {
     } catch (err) {
       console.error('Error fetching counter values:', err as Error);
     }
+  }
+
+  const handleCreateNft = async () => {
+    console.log("Yes")
   }
 
   useEffect(() => {
@@ -195,11 +205,7 @@ export const MainContentSection = (): JSX.Element => {
 
           <TabsContent value="created">
             <div className="flex justify-end mb-6">
-              <Button className="h-auto items-center justify-center gap-3 px-[25px] py-[12px] rounded-[12px] border-2 border-solid border-[#a259ff] transition-all duration-[0.3s] ease-[ease] bg-transparent hover:bg-[#a259ff]/10">
-              <span className="[font-family:'Work_Sans',Helvetica] font-semibold text-[#ffffff] text-base text-center tracking-[0] leading-[22.4px] whitespace-nowrap">
-                Create New Character
-              </span>
-            </Button>
+              <CreateNewCharacterModal onCreate={handleCreateNft} assets={assets} avatars={avatars} />
             </div>
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
               <div
@@ -266,7 +272,7 @@ export const MainContentSection = (): JSX.Element => {
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
               <div className="w-full max-w-5xl text-white px-2">
                 <div className="flex flex-col gap-10">
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
                     {assets?.map((asset, index) => (
                       <NftCard key={index} name={asset.name} image={asset.image} />
                     ))}
