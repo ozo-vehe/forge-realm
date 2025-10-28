@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import { Badge } from "../../../../components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
-import { Card, CardContent } from "../../../../components/ui/card";
-import { Avatar, AvatarImage } from "../../../../components/ui/avatar";
 import { usePushWalletContext } from "@pushchain/ui-kit";
-import { ethers, uuidV4 } from "ethers";
+import { ethers } from "ethers";
 import baseJson from "../../../../contract/abi/BaseNFT.json";
 import assetJson from "../../../../contract/abi/TraitNFT.json";
 import { baseNftContractAddress, traitNftContractAddress } from "../../../../contract/address";
 import NftCard from "../../../../components/ui/nft-card";
-import { Button } from "../../../../components/ui/button";
 import { getCreatedCharacter, saveUserAvatar, saveUserCharacter, supabase } from "../../../../lib/supabase";
 import { CreateNewCharacterModal } from "../CreateNewCharacterSection";
 import { v4 } from "uuid"
@@ -36,23 +33,6 @@ interface Metadata {
   uri: string;
   youtube_url: string;
 };
-// const tabs = [
-//   {
-//     label: "Created",
-//     count: "302",
-//     isActive: true,
-//   },
-//   {
-//     label: "Owned",
-//     count: "67",
-//     isActive: false,
-//   },
-//   {
-//     label: "Collection",
-//     count: "4",
-//     isActive: false,
-//   },
-// ];
 
 export const MainContentSection = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState("created")
@@ -243,7 +223,7 @@ export const MainContentSection = (): JSX.Element => {
           </TabsList>
 
           <TabsContent value="created">
-            <div className="flex justify-end mb-6">
+            <div className="flex justify-start mt-8">
               <CreateNewCharacterModal onCreate={(avatar, assets) => handleCreateNftCharacter(avatar, assets)} assets={assets} avatars={new Array(...new Set(avatars))} isLoading={isLoading} />
             </div>
             <div className="flex flex-col items-center pt-10 pb-20 w-full gap-8">
