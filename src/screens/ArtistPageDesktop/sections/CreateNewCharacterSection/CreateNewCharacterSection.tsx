@@ -58,14 +58,28 @@ export const CreateNewCharacterModal: FC<ModalProps> = ({
   const [open, setOpen] = useState<boolean>(false);
 
   const handleSelectAsset = (asset: Metadata) => {
-    const category: AssetCategory = asset.attributes[0].value.toLowerCase()
-    console.log(category)
-    console.log(asset)
-    if (category === "armor") setArmor(asset)
-    else if (category === "shield") setShield(asset)
-    else if (category === "weapon") setWeapon(asset)
-    setSelectedAsset(asset.name)
-    console.log(armor)
+    const category: AssetCategory = asset.attributes[0].value.toLowerCase();
+
+    let isAlreadySelected = false;
+    if (category === "armor" && armor?.name === asset.name) {
+      setArmor(null);
+      isAlreadySelected = true;
+    } else if (category === "shield" && shield?.name === asset.name) {
+      setShield(null);
+      isAlreadySelected = true;
+    } else if (category === "weapon" && weapon?.name === asset.name) {
+      setWeapon(null);
+      isAlreadySelected = true;
+    }
+
+    if (isAlreadySelected) {
+      setSelectedAsset(null);
+    } else {
+      if (category === "armor") setArmor(asset);
+      else if (category === "shield") setShield(asset);
+      else if (category === "weapon") setWeapon(asset);
+      setSelectedAsset(asset.name);
+    }
   };
 
   // useEffect(()=> {
@@ -83,7 +97,7 @@ export const CreateNewCharacterModal: FC<ModalProps> = ({
         <div className={modalWrapper}>
           <div className={modalBox}>
             {/* Avatars Section */}
-            <div className="flex-1 p-5 flex justify-between flex-col border-r max-w-[60%]">
+            <div className="flex-1 p-5 flex justify-between flex-col border-r lg:max-w-[60%] md:max-w-[60%] w-full">
               <div>
                 <div className={sectionTitle}>Choose Avatar</div>
                 {/* Force scrollable (horizontal) container to work by preventing flex from limiting width and allowing overflow */}
@@ -130,7 +144,7 @@ export const CreateNewCharacterModal: FC<ModalProps> = ({
                         alt={asset.name}
                         className="w-full h-[60%] object-contain mb-2"
                       />
-                      <span className="text-xs border mt-1 font-semibold">{asset.name}</span>
+                      <span className="text-xs mt-1 font-semibold">{asset.name}</span>
                     </button>
                   ))}
                 </div>
@@ -161,7 +175,10 @@ export const CreateNewCharacterModal: FC<ModalProps> = ({
                       ? ""
                       : "cursor-not-allowed"
                       }`}
-                    disabled={!selectedAvatar || !selectedAsset}
+                    disabled={
+                      !selectedAvatar ||
+                      (!weapon && !armor && !shield)
+                    }
                     onClick={() => {
                       const selectedAssets: Metadata[] = [weapon, armor, shield].filter(Boolean) as Metadata[];
                       if (selectedAvatar && selectedAssets.length > 0) {
@@ -174,7 +191,14 @@ export const CreateNewCharacterModal: FC<ModalProps> = ({
 
                   <Button
                     className="w-full rounded-[20px] text-white mt-0 text-center text-sm h-[45px]"
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      setOpen(false)
+                      setSelectedAvatar(null)
+                      setArmor(null)
+                      setWeapon(null)
+                      setShield(null)
+                      setSelectedAsset(null)
+                    }}
                   >
                     Cancel
                   </Button>
